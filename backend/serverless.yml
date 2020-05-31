@@ -15,11 +15,11 @@ provider:
   environment: 
     TODOS_TABLE: Todos-${self:provider.stage}
 
-iamRoleStatements:
-  - Effect: Allow
-    Action:
-    - dynamodb:Scan
-    Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.TODOS_TABLE}
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - dynamodb:Scan
+      Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.TODOS_TABLE}
 
     
 functions:
