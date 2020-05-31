@@ -1,7 +1,7 @@
 import 'source-map-support/register'
 import * as AWS from 'aws-sdk'
 import { APIGatewayProxyEvent, APIGatewayProxyHandler, APIGatewayProxyResult } from 'aws-lambda'
-
+import { parseUserId } from '../../auth/utils'
 import { CreateTodoRequest } from '../../requests/CreateTodoRequest'
 import * as uuid from 'uuid'
 
@@ -13,9 +13,12 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
   
   // TODO: Implement creating a new TODO item
   
-  const userId = event.pathParameters.userId
   const todoId = uuid.v4()
-  const newItem = await createTodo(userId, todoId, event)
+  const authorization = event.headers.Authorization
+  const split = authorization.split(' ')
+  const jwtToken = split[1]
+
+  const newItem = await createTodo( todoId, event, jwtToken)
 
   return {
     statusCode: 201,
@@ -30,9 +33,10 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
 }
 
 
-async function createTodo(userId: string, todoId: string, event: any) {
+async function createTodo(todoId: string, event: any, jwtToken: string) {
   const newTodo: CreateTodoRequest = JSON.parse(event.body)
   const createdAt = new Date().toISOString()
+  const userId = parseUserId(jwtToken)
   const newItem = {
     userId,
     todoId,
