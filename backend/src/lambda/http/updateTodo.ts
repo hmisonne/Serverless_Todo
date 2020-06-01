@@ -28,13 +28,14 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
           body: 'Todo Id does not exist'
         };
   }
-  const newTodo = await updateTodo(todoId, userId, updatedTodo)
+  const items = await updateTodo(todoId, userId, updatedTodo)
   return {
     statusCode: 200,
     headers: {
-      'Access-Control-Allow-Origin': '*'
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Credentials': true
     },
-    body: JSON.stringify(newTodo)
+    body: JSON.stringify(items)
   }
 }
 
@@ -56,7 +57,8 @@ async function updateTodo(todoId: string, userId: string, updatedTodo: UpdateTod
         ':name' : updatedTodo.name,
         ':dueDate' : updatedTodo.dueDate,
         ':done' : updatedTodo.done,
-      }
+      },
+      ReturnValues: "UPDATED_NEW"
     })
     .promise()
     
