@@ -58,6 +58,8 @@ functions:
       - http:
           method: patch
           path: todos/{todoId}
+          cors: true
+          authorizer: Auth
 
   # # TODO: Configure this function
   # DeleteTodo:
