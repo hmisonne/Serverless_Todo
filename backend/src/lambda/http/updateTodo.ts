@@ -28,7 +28,7 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
           body: 'Todo Id does not exist'
         };
   }
-  const newTodo = updateTodo(todoId, userId, updatedTodo)
+  const newTodo = await updateTodo(todoId, userId, updatedTodo)
   return {
     statusCode: 200,
     headers: {
