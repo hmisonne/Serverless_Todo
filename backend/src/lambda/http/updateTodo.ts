@@ -4,20 +4,21 @@ import { APIGatewayProxyEvent, APIGatewayProxyHandler, APIGatewayProxyResult } f
 import { parseUserId } from '../../auth/utils'
 import { UpdateTodoRequest } from '../../requests/UpdateTodoRequest'
 import * as AWS from 'aws-sdk'
+import { createLogger } from '../../utils/logger'
+import { getUserId } from '../utils'
+
+const logger = createLogger('updateTodo')
 
 const docClient = new AWS.DynamoDB.DocumentClient()
 const todoTable = process.env.TODOS_TABLE
 // const todoIdIndex = process.env.TODO_ID_INDEX
 
 export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
+  logger.info('Processing event: ', event)
   const todoId = event.pathParameters.todoId
+
   const updatedTodo: UpdateTodoRequest = JSON.parse(event.body)
   
-  const authorization = event.headers.Authorization
-  const split = authorization.split(' ')
-  const jwtToken = split[1]
-
-  const userId = parseUserId(jwtToken)
 
   // if (!(await getTodo(todoId))) {
   //    return {
@@ -28,7 +29,7 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
   //         body: 'Todo Id does not exist'
   //       };
   // }
-  const items = await updateTodo(todoId, userId, updatedTodo)
+  const items = await updateTodo(todoId, updatedTodo, event)
   return {
     statusCode: 200,
     headers: {
@@ -39,16 +40,16 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
   }
 }
 
-async function updateTodo(todoId: string, userId: string, updatedTodo: UpdateTodoRequest) {
-
+async function updateTodo(todoId: string, updatedTodo: UpdateTodoRequest, event: any ) {
+  const userId = getUserId(event)
   const newItem = await docClient
     .update({
       TableName: todoTable,
       Key: { 
         todoId, 
         userId },
-      UpdateExpression: "set #N = :name, dueDate :dueDate, done :done",
       ExpressionAttributeNames: {"#N": "name"},
+      UpdateExpression: "set #N = :name, dueDate :dueDate, done :done",
       ExpressionAttributeValues: {
         ":name": updatedTodo.name,
         ":dueDate": updatedTodo.dueDate,
