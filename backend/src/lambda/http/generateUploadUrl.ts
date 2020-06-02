@@ -7,7 +7,7 @@ const s3 = new AWS.S3({
 })
 
 // const todosTable = process.env.TODOS_TABLE
-const bucketName = process.env.FILES_S3_BUCKET
+const bucketName = process.env.ATTACHEMENTS_S3_BUCKET
 const urlExpiration = process.env.SIGNED_URL_EXPIRATION
 
 
