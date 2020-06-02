@@ -12,7 +12,7 @@ const logger = createLogger('getTodos')
 export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
   // TODO: Get all TODO items for a current user
   logger.info('Processing event: ', event)
-  const result = await docClient.scan({
+  const result = await docClient.query({
     TableName: todosTable
   }).promise()
   
