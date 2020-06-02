@@ -146,4 +146,4 @@ resources:
               Principal: '*'
               Action: 's3:GetObject'
               Resource: 'arn:aws:s3:::${self:provider.environment.FILES_S3_BUCKET}/*'
-      Bucket: !Ref AttachmentsBucket
+        Bucket: !Ref AttachmentsBucket
