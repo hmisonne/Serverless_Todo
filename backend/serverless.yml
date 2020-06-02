@@ -106,7 +106,5 @@ resources:
             KeyType: HASH
           - AttributeName: todoId
             KeyType: RANGE
-            Projection:
-              ProjectionType: ALL
         BillingMode: PAY_PER_REQUEST
         TableName: ${self:provider.environment.TODOS_TABLE}
