@@ -48,7 +48,7 @@ async function updateTodo(todoId: string, updatedTodo: UpdateTodoRequest, event:
         todoId, 
         userId },
       ExpressionAttributeNames: {"#N": "name"},
-      UpdateExpression: "set #N = :name, dueDate :dueDate, done :done",
+      UpdateExpression: "set #N = :name, dueDate = :dueDate, done = :done",
       ExpressionAttributeValues: {
         ":name": updatedTodo.name,
         ":dueDate": updatedTodo.dueDate,
