@@ -4,7 +4,6 @@ service:
 plugins:
   - serverless-webpack
   - serverless-iam-roles-per-function
-  - serverless-reqvalidator-plugin
 
 provider:
   name: aws
@@ -32,7 +31,7 @@ provider:
         - dynamodb:Query
       Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.TODOS_TABLE}/index/${self:provider.environment.TODO_ID_INDEX}
 
-    
+
 functions:
   Auth:
     handler: src/lambda/auth/auth0Authorizer.handler
@@ -102,7 +101,7 @@ resources:
         ResponseType: DEFAULT_4XX
         RestApiId:
           Ref: ApiGatewayRestApi
-          
+
     TodosDynamoDBTable:
       Type: AWS::DynamoDB::Table
       Properties:
