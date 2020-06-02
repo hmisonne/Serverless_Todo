@@ -14,8 +14,7 @@ provider:
 
   environment: 
     TODOS_TABLE: Todos-${self:provider.stage}
-    TODO_ID_INDEX: TodoIdIndex
-    FILES_S3_BUCKET: serverless-todo-files-${self:provider.stage}
+    ATTACHEMENTS_S3_BUCKET: serverless-todo-files-${self:provider.stage}
     SIGNED_URL_EXPIRATION: 300
 
   iamRoleStatements:
@@ -26,11 +25,6 @@ provider:
         - dynamodb:UpdateItem
         - dynamodb:DeleteItem
       Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.TODOS_TABLE}
-    - Effect: Allow
-      Action:
-        - dynamodb:Query
-      Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.TODOS_TABLE}/index/${self:provider.environment.TODO_ID_INDEX}
-
 
 functions:
   Auth:
@@ -87,6 +81,16 @@ functions:
           path: todos/{todoId}/attachment
           cors: true
           authorizer: Auth
+    iamRoleStatements:
+      - Effect: Allow
+        Action:
+          - dynamodb:Query
+        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.TODOS_TABLE}
+      - Effect: Allow
+        Action:
+          - s3:PutObject
+          - s3:GetObject
+        Resource: arn:aws:s3:::${self:provider.environment.ATTACHEMENTS_S3_BUCKET}/*
 
 resources:
   Resources:
@@ -121,7 +125,7 @@ resources:
     AttachmentsBucket:
       Type: AWS::S3::Bucket
       Properties:
-        BucketName: ${self:provider.environment.FILES_S3_BUCKET}
+        BucketName: ${self:provider.environment.ATTACHEMENTS_S3_BUCKET}
         CorsConfiguration:
           CorsRules:
             -
@@ -148,5 +152,5 @@ resources:
               Effect: Allow
               Principal: '*'
               Action: 's3:GetObject'
-              Resource: 'arn:aws:s3:::${self:provider.environment.FILES_S3_BUCKET}/*'
+              Resource: 'arn:aws:s3:::${self:provider.environment.ATTACHEMENTS_S3_BUCKET}/*'
         Bucket: !Ref AttachmentsBucket
