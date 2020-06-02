@@ -51,5 +51,23 @@ export class TodoAccess {
         return updatedTodo
         
     }
+    async removeTodo(userId: string, todoId: string) {
+        const params = {
+            TableName: this.todoTable,
+            Key: {
+              todoId, 
+              userId
+            }
+          }
+        await this.docClient.delete(params, function(err, data) {
+            if (err) {
+                console.error("Unable to delete item", JSON.stringify(err))
+            }
+            else {
+                console.log("DeleteItem succeeded", JSON.stringify(data))
+            }
+        }).promise()
+        
+    }
     
 }

@@ -33,3 +33,7 @@ export async function updateTodo(updateTodoRequest: UpdateTodoRequest, userId: s
         done: updateTodoRequest.done
     })
 }
+
+export async function removeTodo(userId: string, todoId: string){
+    return await todoAccess.removeTodo(userId, todoId)
+}
