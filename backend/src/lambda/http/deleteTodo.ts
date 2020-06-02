@@ -11,7 +11,14 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
 
   const data = await removeTodo(todoId, event)
   // TODO: Remove a TODO item by id
-  return undefined
+  return {
+    statusCode: 200,
+    headers: {
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Credentials': true
+    },
+    body: JSON.stringify(data)
+  }
 }
 
 async function removeTodo(todoId: string, event: any){
