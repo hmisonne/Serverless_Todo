@@ -61,13 +61,15 @@ functions:
           cors: true
           authorizer: Auth
 
-  # # TODO: Configure this function
-  # DeleteTodo:
-  #   handler: src/lambda/http/deleteTodo.handler
-  #   events:
-  #     - http:
-  #         method: delete
-  #         path: todos/{todoId}
+  # TODO: Configure this function
+  DeleteTodo:
+    handler: src/lambda/http/deleteTodo.handler
+    events:
+      - http:
+          method: delete
+          path: todos/{todoId}
+          cors: true
+          authorizer: Auth
 
   # # TODO: Configure this function
   # GenerateUploadUrl:
@@ -97,20 +99,13 @@ resources:
         AttributeDefinitions:
           - AttributeName: userId
             AttributeType: S
-          - AttributeName: createdAt
-            AttributeType: S
           - AttributeName: todoId
             AttributeType: S
         KeySchema:
           - AttributeName: userId
             KeyType: HASH
-          - AttributeName: createdAt
+          - AttributeName: todoId
             KeyType: RANGE
-        GlobalSecondaryIndexes:
-          - IndexName: ${self:provider.environment.TODO_ID_INDEX}
-            KeySchema:
-            - AttributeName: todoId
-              KeyType: HASH
             Projection:
               ProjectionType: ALL
         BillingMode: PAY_PER_REQUEST
