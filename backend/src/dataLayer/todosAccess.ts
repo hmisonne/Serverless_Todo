@@ -5,13 +5,13 @@ import { TodoItem } from '../models/TodoItem'
 export class TodoAccess {
     constructor(
         private readonly docClient = new AWS.DynamoDB.DocumentClient(),
-        private readonly todosTable = process.env.TODOS_TABLE){}
+        private readonly todoTable = process.env.TODOS_TABLE){}
 
     async getAllTodos(userId: string): Promise<TodoItem[]> {
         console.log('Getting all todos')
 
         const result = await this.docClient.query({
-            TableName: this.todosTable,
+            TableName: this.todoTable,
             KeyConditionExpression: 'userId = :userId',
             ExpressionAttributeValues: {
                 ':userId': userId
@@ -25,11 +25,30 @@ export class TodoAccess {
     }
     async createTodo(todo: TodoItem): Promise<TodoItem> {
         await this.docClient.put({
-            TableName: this.todosTable,
+            TableName: this.todoTable,
             Item: todo,
           }).promise()
           
         return todo
+        
+    }
+    async updateTodo(updatedTodo: any): Promise<TodoItem> {
+        await this.docClient.update({
+            TableName: this.todoTable,
+            Key: { 
+                todoId: updatedTodo.todoId, 
+                userId: updatedTodo.userId },
+            ExpressionAttributeNames: {"#N": "name"},
+            UpdateExpression: "set #N = :name, dueDate = :dueDate, done = :done",
+            ExpressionAttributeValues: {
+                ":name": updatedTodo.name,
+                ":dueDate": updatedTodo.dueDate,
+                ":done": updatedTodo.done,
+            },
+            ReturnValues: "UPDATED_NEW"
+        }).promise()
+          
+        return updatedTodo
         
     }
     
