@@ -3,11 +3,12 @@ import { APIGatewayProxyEvent, APIGatewayProxyResult, APIGatewayProxyHandler } f
 import { getTodo } from '../../businessLogic/todos'
 import { createLogger } from '../../utils/logger'
 import { getUserId } from '../utils'
-
+import * as middy from 'middy'
+import { cors } from 'middy/middlewares'
 
 const logger = createLogger('getTodo')
 
-export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
+export const handler = middy(async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
   logger.info('Processing event: ', event)
   const userId = getUserId(event)
   const todoId = event.pathParameters.todoId
@@ -19,21 +20,19 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
     logger.info('Incorrect ID: ', todoId)
     return {
         statusCode: 404,
-        headers: {
-          'Access-Control-Allow-Origin': '*',
-          'Access-Control-Allow-Credentials': true
-        },
         body: 'todoId does not exist'
       }
   }
   return {
     statusCode: 200,
-    headers: {
-      'Access-Control-Allow-Origin': '*',
-      'Access-Control-Allow-Credentials': true
-    },
     body: JSON.stringify({
       item
     })
   }
-}
+})
+
+handler.use(
+  cors({
+    credentials: true
+  })
+)

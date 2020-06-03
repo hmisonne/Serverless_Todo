@@ -4,6 +4,8 @@ import { APIGatewayProxyEvent, APIGatewayProxyResult, APIGatewayProxyHandler } f
 // import { updateTodo } from '../../businessLogic/todos'
 // import { getUserId } from '../utils'
 import * as AWSXRay from 'aws-xray-sdk'
+import * as middy from 'middy'
+import { cors } from 'middy/middlewares'
 
 const XAWS = AWSXRay.captureAWS(AWS)
 
@@ -16,7 +18,7 @@ const bucketName = process.env.ATTACHEMENTS_S3_BUCKET
 const urlExpiration = process.env.SIGNED_URL_EXPIRATION
 
 
-export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
+export const handler = middy(async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
   const todoId = event.pathParameters.todoId
 
   // TODO: Return a presigned URL to upload a file for a TODO item with the provided id
@@ -26,15 +28,11 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
   // updateTodo({attachmentUrl?: url}, userId, todoId)
   return {
     statusCode: 200,
-    headers: {
-      'Access-Control-Allow-Origin': '*',
-      'Access-Control-Allow-Credentials': true
-    },
     body: JSON.stringify({
       uploadUrl
     })
   }
-}
+})
 
 function getUploadUrl(todoId: string) {
   return s3.getSignedUrl('putObject', {
@@ -43,3 +41,9 @@ function getUploadUrl(todoId: string) {
     Expires: urlExpiration
   })
 }
+
+handler.use(
+  cors({
+    credentials: true
+  })
+)

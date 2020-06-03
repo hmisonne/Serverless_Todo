@@ -4,10 +4,12 @@ import { getUserId } from '../utils'
 import { createTodo } from '../../businessLogic/todos'
 import { CreateTodoRequest } from '../../requests/CreateTodoRequest'
 import { createLogger } from '../../utils/logger'
+import * as middy from 'middy'
+import { cors } from 'middy/middlewares'
 
 const logger = createLogger('createTodo')
 
-export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
+export const handler = middy(async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
   
   // TODO: Implement creating a new TODO item
   logger.info('Processing event: ', event)
@@ -17,12 +19,14 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
 
   return {
     statusCode: 201,
-    headers: {
-      'Access-Control-Allow-Origin': '*',
-      'Access-Control-Allow-Credentials': true
-    },
     body: JSON.stringify({
       item: newItem
     })
   }
-}
+})
+
+handler.use(
+  cors({
+    credentials: true
+  })
+)
