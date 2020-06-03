@@ -11,15 +11,19 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
   logger.info('Processing event: ', event)
   const userId = getUserId(event)
   const todoId = event.pathParameters.todoId
+
+  //   Check if todoId exists
   const item = await getTodo(userId, todoId)
-  if (item == []){
+
+  if (item.length === 0){
+    logger.info('Incorrect ID: ', todoId)
     return {
         statusCode: 404,
         headers: {
           'Access-Control-Allow-Origin': '*',
           'Access-Control-Allow-Credentials': true
         },
-        body: 'todo does not exist'
+        body: 'todoId does not exist'
       }
   }
   return {
