@@ -1,6 +1,6 @@
 import 'source-map-support/register'
 import * as AWS from 'aws-sdk'
-import { APIGatewayProxyEvent, APIGatewayProxyResult, APIGatewayProxyHandler } from 'aws-lambda'
+import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda'
 // import { updateTodo } from '../../businessLogic/todos'
 // import { getUserId } from '../utils'
 import * as AWSXRay from 'aws-xray-sdk'
