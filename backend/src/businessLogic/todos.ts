@@ -41,3 +41,11 @@ export async function updateTodo(updateTodoRequest: UpdateTodoRequest, userId: s
 export async function removeTodo(userId: string, todoId: string){
     return await todoAccess.removeTodo(userId, todoId)
 }
+
+export async function updateTodoUrl(updateTodo, userId: string, todoId: string): Promise<TodoItem>{
+    return await todoAccess.updateTodoUrl({
+        userId,
+        todoId,
+        attachmentUrl: updateTodo.attachmentUrl,
+    })
+}
