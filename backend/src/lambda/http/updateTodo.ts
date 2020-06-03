@@ -2,7 +2,6 @@ import 'source-map-support/register'
 
 import { APIGatewayProxyEvent, APIGatewayProxyHandler, APIGatewayProxyResult } from 'aws-lambda'
 import { UpdateTodoRequest } from '../../requests/UpdateTodoRequest'
-
 import { createLogger } from '../../utils/logger'
 import { getUserId } from '../utils'
 import { updateTodo } from '../../businessLogic/todos'
