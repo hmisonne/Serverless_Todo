@@ -4,6 +4,7 @@ service:
 plugins:
   - serverless-webpack
   - serverless-iam-roles-per-function
+  - serverless-plugin-tracing
 
 provider:
   tracing:
@@ -36,6 +37,24 @@ functions:
         Action:
           - s3:GetObject
         Resource: arn:aws:s3:::${self:provider.environment.ATTACHEMENTS_S3_BUCKET}/*
+      - Effect: Allow
+        Action:
+          - dynamodb:Query
+        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.TODOS_TABLE}
+      - Effect: Allow
+        Action:
+          - "xray:PutTraceSegments"
+          - "xray:PutTelemetryRecords"
+        Resource:
+          - "*"
+  GetTodo:
+    handler: src/lambda/http/getTodo.handler
+    events:
+      - http:
+          method: get
+          path: todos/{todoId}
+          cors: true
+    iamRoleStatements:
       - Effect: Allow
         Action:
           - dynamodb:Query
