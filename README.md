@@ -124,9 +124,19 @@ This app is using Auth0 to implement authentication. The configuration of the "d
 
 ## How to run the application
 
+### Prerequisite
+
+1. Install serverless `npm install -g serverless`
+
+2. Set up a new user in IAM named "serverless" with Programmatic access and with AdministratorAccess policy attached and save the access key and secret key.
+
+3. Configure serverless to use the AWS credentials you just set up:
+`sls config credentials --provider aws --key YOUR_ACCESS_KEY --secret YOUR_SECRET_KEY --profile serverless`
+
 ### Backend
 
-This application has been deployed to AWS using the following commands: `sls deploy -v`
+To deploy this application, use the following commands: `sls deploy -v`
+
 
 ### Frontend
 
@@ -140,10 +150,12 @@ npm run start
 
 ## Accomplishments
 
-### Automic Resource Creation
+### Resource Creation
 
+- DynamoDB to store TODO item with userId, todoId, done, dueDate, attachmentUrl, createdAt attributes
 ![DynamoDB](images/DynamoDB.JPG)
 
+- s3 Bucket to store file attached to TODO item
 ![s3Bucket](images/s3Bucket.JPG)
 
 ### Configuration of Lambda Functions
@@ -154,10 +166,10 @@ npm run start
 
 ### Implemented Tracing
 
-#### CloudWatch
+- CloudWatch to monitors logs
 
 ![CloudWatchLogGroup](images/CloudWatchLogGroup.JPG)
 
-#### X-Ray
+- X-Ray to record metrics
 
 ![X-Ray](images/X-Ray.JPG)
